@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Link Extractor</title>
+
+<style>
+body{
+font-family: Arial;
+background:#111;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+textarea{
+width:90%;
+height:200px;
+padding:10px;
+border-radius:8px;
+border:none;
+font-size:14px;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+border:none;
+border-radius:6px;
+background:#00ff88;
+cursor:pointer;
+font-weight:bold;
+}
+
+.linkBox{
+background:#222;
+padding:10px;
+margin:8px;
+border-radius:8px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.linkBox a{
+color:#00ffcc;
+text-decoration:none;
+word-break:break-all;
+}
+</style>
+</head>
+
+<body>
+
+<h2>🔗 Link Extractor Tool</h2>
+
+<textarea id="input" placeholder="Paste all text here..."></textarea><br>
+
+<button onclick="extractLinks()">Extract Links</button>
+
+<div id="output"></div>
+
+<script>
+
+function extractLinks(){
+
+let text = document.getElementById("input").value;
+
+let regex = /(https?:\/\/[^\s]+)/g;
+
+let links = text.match(regex);
+
+let output = document.getElementById("output");
+
+output.innerHTML = "";
+
+if(!links){
+output.innerHTML = "No links found";
+return;
+}
+
+links.forEach(link => {
+
+let div = document.createElement("div");
+div.className = "linkBox";
+
+div.innerHTML = `
+<a href="${link}" target="_blank">${link}</a>
+<button onclick="copyLink('${link}')">Copy</button>
+`;
+
+output.appendChild(div);
+
+});
+
+}
+
+function copyLink(link){
+
+navigator.clipboard.writeText(link);
+alert("Copied!");
+
+}
+
+</script>
+
+</body>
+</html>
