@@ -1,35 +1,58 @@
 <!DOCTYPE html>
+
 <html>
 <head>
 
-<title>Copy Links</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Link Copy Manager</title>
 
 <style>
 
 body{
 font-family:Arial;
-background:#111;
+background:#0f0f0f;
 color:white;
 text-align:center;
-padding:20px;
+padding:15px;
 }
 
-.box{
-background:#222;
-margin:8px;
-padding:10px;
-border-radius:8px;
-display:flex;
-justify-content:space-between;
-align-items:center;
+.stats{
+margin:10px;
+font-size:18px;
 }
 
 button{
-padding:6px 12px;
+padding:8px 15px;
 border:none;
-border-radius:5px;
+border-radius:6px;
 background:#00ff88;
 cursor:pointer;
+font-weight:bold;
+}
+
+.copyNext{
+background:#ff9800;
+margin:10px;
+}
+
+.section{
+margin-top:25px;
+}
+
+.box{
+background:#1e1e1e;
+margin:8px;
+padding:12px;
+border-radius:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+font-size:14px;
+word-break:break-all;
+}
+
+.copied{
+background:#163a28;
 }
 
 </style>
@@ -38,21 +61,47 @@ cursor:pointer;
 
 <body>
 
-<h2>📋 Copy Links</h2>
+<h2>📋 Link Copy Manager</h2>
 
-<a href="index.html">⬅ Back</a>
+<a href="index.html">
+<button>⬅ Back</button>
+</a>
 
-<div id="links"></div>
+<div class="stats">
+Remaining: <span id="remaining">0</span> |
+Copied: <span id="done">0</span>
+</div>
+
+<button class="copyNext" onclick="copyNext()">⚡ Copy Next</button>
+
+<div class="section">
+<h3>🔗 Not Copied</h3>
+<div id="notCopied"></div>
+</div>
+
+<div class="section">
+<h3>✅ Copied</h3>
+<div id="copied"></div>
+</div>
 
 <script>
 
-let links=JSON.parse(localStorage.getItem("links"))||[]
+let links = JSON.parse(localStorage.getItem("links")) || []
+let copiedLinks = JSON.parse(localStorage.getItem("copiedLinks")) || []
 
-let container=document.getElementById("links")
+let notCopiedDiv=document.getElementById("notCopied")
+let copiedDiv=document.getElementById("copied")
 
-function show(){
+let remaining=document.getElementById("remaining")
+let done=document.getElementById("done")
 
-container.innerHTML=""
+function render(){
+
+notCopiedDiv.innerHTML=""
+copiedDiv.innerHTML=""
+
+remaining.innerText=links.length
+done.innerText=copiedLinks.length
 
 links.forEach((link,i)=>{
 
@@ -62,30 +111,64 @@ div.className="box"
 
 div.innerHTML=`
 <span>${link}</span>
-<button onclick="copy(${i})">Copy</button>
+<button onclick="copyLink(${i})">Copy</button>
 `
 
-container.appendChild(div)
+notCopiedDiv.appendChild(div)
+
+})
+
+copiedLinks.forEach(link=>{
+
+let div=document.createElement("div")
+
+div.className="box copied"
+
+div.innerHTML=`
+<span>${link}</span>
+<button disabled>Copied</button>
+`
+
+copiedDiv.appendChild(div)
 
 })
 
 }
 
-function copy(i){
+function copyLink(i){
 
-navigator.clipboard.writeText(links[i])
+let link=links[i]
+
+navigator.clipboard.writeText(link)
 
 links.splice(i,1)
 
-localStorage.setItem("links",JSON.stringify(links))
+copiedLinks.push(link)
 
-show()
+save()
 
 }
 
-show()
+function copyNext(){
 
-</script>
+if(links.length==0){
+alert("All links copied!")
+return
+}
 
-</body>
-</html>
+let link=links[0]
+
+navigator.clipboard.writeText(link)
+
+links.shift()
+
+copiedLinks.push(link)
+
+save()
+
+}
+
+function save(){
+
+localStorage.setItem("links",JSON.stringify(links))
+localStorage.set
