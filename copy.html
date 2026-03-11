@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Copy Links</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#111;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+.box{
+background:#222;
+margin:8px;
+padding:10px;
+border-radius:8px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+button{
+padding:6px 12px;
+border:none;
+border-radius:5px;
+background:#00ff88;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>📋 Copy Links</h2>
+
+<a href="index.html">⬅ Back</a>
+
+<div id="links"></div>
+
+<script>
+
+let links=JSON.parse(localStorage.getItem("links"))||[]
+
+let container=document.getElementById("links")
+
+function show(){
+
+container.innerHTML=""
+
+links.forEach((link,i)=>{
+
+let div=document.createElement("div")
+
+div.className="box"
+
+div.innerHTML=`
+<span>${link}</span>
+<button onclick="copy(${i})">Copy</button>
+`
+
+container.appendChild(div)
+
+})
+
+}
+
+function copy(i){
+
+navigator.clipboard.writeText(links[i])
+
+links.splice(i,1)
+
+localStorage.setItem("links",JSON.stringify(links))
+
+show()
+
+}
+
+show()
+
+</script>
+
+</body>
+</html>
